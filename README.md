@@ -70,7 +70,7 @@ MLFLOW dashboard
 
 
 
-Swaager UI (Running output rediction)
+Swaager UI (Running output prediction)
 
 ![WhatsApp Image 2026-01-02 at 17 01 08 (3)](https://github.com/user-attachments/assets/97786234-bf85-4944-bbfc-fb51b686ec5a)
 
@@ -127,4 +127,5 @@ Email support systems
 User feedback forms
 
 Such systems typically generate thousands to millions of tickets, enabling better model accuracy through continuous training and MLOps pipelines.
+
 
