@@ -1,0 +1,6 @@
+text,category,priority
+"Unable to login to account",Technical,High
+"Refund not received yet",Billing,Medium
+"App crashes on startup",Technical,High
+"Want to change email address",Account,Low
+"Payment deducted twice",Billing,High
