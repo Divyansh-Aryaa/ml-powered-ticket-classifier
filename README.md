@@ -14,116 +14,60 @@
 
 <br />
 
-<!-- Animated Processing Banner -->
-<svg width="100%" height="160" viewBox="0 0 800 160" xmlns="http://www.w3.org/2000/svg" style="background: #0d1117; border-radius: 10px; border: 1px solid #30363d;">
-  <style>
-    .title { font: bold 18px 'Segoe UI', Ubuntu, sans-serif; fill: #58a6ff; }
-    .node-text { font: 12px 'Segoe UI', Ubuntu, sans-serif; fill: #c9d1d9; }
-    .ticket-text { font: italic 11px monospace; fill: #79c0ff; }
-    .badge { font: bold 11px sans-serif; fill: #ffffff; }
-    
-    @keyframes moveTicket {
-      0% { transform: translate(40px, 70px); opacity: 0; }
-      15% { opacity: 1; }
-      35% { transform: translate(250px, 70px); }
-      65% { transform: translate(470px, 70px); }
-      85% { opacity: 1; }
-      100% { transform: translate(680px, 70px); opacity: 0; }
-    }
-    
-    @keyframes pulse {
-      0%, 100% { r: 18; opacity: 0.2; }
-      50% { r: 24; opacity: 0.6; }
-    }
+```mermaid
+flowchart LR
+    A["📩 Raw Ticket<br/>App crashes on startup"] -->|1. Vectorization| B["⚙️ ML Pipeline<br/>TF-IDF + LogReg"]
+    B -->|2. Classification| C["🚀 FastAPI Serving<br/>POST /predict"]
+    C -->|3. Output JSON| D["🏷️ Category Result<br/>Technical (Conf: 94%)"]
 
-    .moving-ticket { animation: moveTicket 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
-    .pulse-effect { animation: pulse 2s ease-in-out infinite; }
-  </style>
-
-  <rect width="100%" height="100%" fill="#0d1117" rx="10" />
-
-  <!-- Connecting Lines -->
-  <line x1="100" y1="85" x2="280" y2="85" stroke="#30363d" stroke-width="3" stroke-dasharray="6,6" />
-  <line x1="340" y1="85" x2="520" y2="85" stroke="#30363d" stroke-width="3" stroke-dasharray="6,6" />
-  <line x1="580" y1="85" x2="700" y2="85" stroke="#30363d" stroke-width="3" stroke-dasharray="6,6" />
-
-  <!-- Pipeline Stage 1: Incoming Ticket -->
-  <g transform="translate(60, 55)">
-    <rect width="80" height="60" rx="8" fill="#161b22" stroke="#388bfd" stroke-width="2" />
-    <text x="40" y="32" text-anchor="middle" class="node-text">📩 Ticket</text>
-    <text x="40" y="48" text-anchor="middle" font-size="9" fill="#8b949e">Unstructured</text>
-  </g>
-
-  <!-- Pipeline Stage 2: TF-IDF & Logistic Regression -->
-  <g transform="translate(280, 55)">
-    <rect width="100" height="60" rx="8" fill="#161b22" stroke="#d29922" stroke-width="2" />
-    <text x="50" y="28" text-anchor="middle" class="node-text">⚙️ ML Model</text>
-    <text x="50" y="45" text-anchor="middle" font-size="10" fill="#e3b341">TF-IDF + LogReg</text>
-  </g>
-
-  <!-- Pipeline Stage 3: FastAPI Serving -->
-  <g transform="translate(500, 55)">
-    <rect width="90" height="60" rx="8" fill="#161b22" stroke="#238636" stroke-width="2" />
-    <text x="45" y="28" text-anchor="middle" class="node-text">🚀 FastAPI</text>
-    <text x="45" y="45" text-anchor="middle" font-size="10" fill="#3fb950">REST Endpoint</text>
-  </g>
-
-  <!-- Animated Moving Packet -->
-  <g class="moving-ticket">
-    <circle cx="0" cy="15" r="8" fill="#58a6ff" />
-    <circle cx="0" cy="15" r="14" fill="#58a6ff" class="pulse-effect" />
-  </g>
-
-  <!-- Stage 4: Output Category -->
-  <g transform="translate(670, 55)">
-    <rect width="100" height="60" rx="8" fill="#238636" stroke="#2ea043" stroke-width="2" />
-    <text x="50" y="28" text-anchor="middle" class="badge">🏷️ Technical</text>
-    <text x="50" y="46" text-anchor="middle" font-size="10" fill="#aff5b4">Conf: 94%</text>
-  </g>
-</svg>
+    style A fill:#161b22,stroke:#388bfd,stroke-width:2px,color:#c9d1d9
+    style B fill:#161b22,stroke:#d29922,stroke-width:2px,color:#c9d1d9
+    style C fill:#161b22,stroke:#238636,stroke-width:2px,color:#c9d1d9
+    style D fill:#1b4721,stroke:#2ea043,stroke-width:2px,color:#aff5b4
+```
 
 </div>
 
 ---
 
-## 📌 Problem Statement & Solution
+## Problem Statement & Solution
 
-### 🚨 The Problem
+### The Problem
 Customer support departments in enterprise organizations receive hundreds or thousands of support tickets every day across email, web forms, and chat applications. 
 * **Manual Triaging Delays:** Support agents spend substantial time reading, tagging, and manually routing incoming tickets to the appropriate teams (IT, Billing, Account Management).
 * **Increased MTTR (Mean Time To Resolution):** Critical issues like application crashes or double-billing take longer to reach the right engineer due to routing bottlenecks.
 * **Human Fatigue & Errors:** Misrouting tickets leads to frustration, lost productivity, and broken Service Level Agreements (SLAs).
 
-### 💡 The Solution
+### The Solution
 The **AI Ticket Classifier** provides an end-to-end Machine Learning microservice that automatically ingests unstructured support text, applies Natural Language Processing (NLP) feature extraction, predicts the category (e.g., `Technical`, `Billing`, `Account`), calculates prediction confidence, and exposes a high-performance REST API for real-time ticket routing.
 
 ---
 
-## 🏗️ System Architecture & Workflow
+## System Architecture & Workflow
 
 ```mermaid
 flowchart TD
-    subgraph Data & Storage Layer
+    subgraph Data_Storage ["Data & Storage Layer"]
         CSV["📄 data/tickets.csv"]
-        DB[("🗄️ SQLite tickets.db<br/>(SQLAlchemy ORM)")]
-        PKL["📦 models/model.pkl<br/>(Serialized Pipeline)"]
-        MLFLOW[("📊 MLflow Registry<br/>(mlflow.db & mlruns)")]
+        DB[("🗄️ SQLite tickets.db<br/>SQLAlchemy ORM")]
+        PKL["📦 models/model.pkl<br/>Serialized Pipeline"]
+        MLFLOW[("📊 MLflow Registry<br/>mlflow.db & mlruns")]
     end
 
-    subgraph Machine Learning Pipeline ("src/train.py")
+    subgraph ML_Pipeline ["Machine Learning Pipeline (src/train.py)"]
         TRAIN_LOAD["1. Load Ticket Dataset"] --> SPLIT["2. Train/Test Split (80/20)"]
-        SPLIT --> VECT["3. TF-IDF Feature Extraction<br/>(max_features=500, English Stop Words)"]
+        SPLIT --> VECT["3. TF-IDF Feature Extraction<br/>max_features=500, English Stop Words"]
         VECT --> LOGREG["4. Multi-class Logistic Regression"]
         LOGREG --> EVAL["5. Evaluate Model Accuracy"]
-        EVAL --> LOG_ML["6. Log Experiment & Metrics to MLflow"]
+        EVAL --> LOG_ML["6. Log Metrics to MLflow"]
         EVAL --> SAVE["7. Export Pipeline to model.pkl"]
     end
 
-    subgraph API Serving Layer ("api/app.py & src/predict.py")
-        REQ["📥 HTTP POST /predict<br/>{'text': 'App crashes on startup'}"] --> FASTAPI["⚡ FastAPI Engine"]
+    subgraph API_Serving ["API Serving Layer (api/app.py & src/predict.py)"]
+        REQ["📥 HTTP POST /predict<br/>Input: App crashes on startup"] --> FASTAPI["⚡ FastAPI Engine"]
         FASTAPI --> PRED_FN["🔍 predict_ticket()"]
         PKL --> PRED_FN
-        PRED_FN --> RESP["📤 Response JSON<br/>{'category': 'Technical', 'confidence': 0.94}"]
+        PRED_FN --> RESP["📤 Response JSON<br/>Category: Technical, Confidence: 0.94"]
     end
 
     CSV --> TRAIN_LOAD
@@ -133,7 +77,7 @@ flowchart TD
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 ai-ticket-classifier/
@@ -159,7 +103,7 @@ ai-ticket-classifier/
 
 ---
 
-## 🛠️ Tech Stack & ML Techniques
+## Tech Stack & ML Techniques
 
 * **Core Language:** Python 3.9+
 * **Machine Learning Framework:** [Scikit-Learn](https://scikit-learn.org/)
@@ -173,7 +117,7 @@ ai-ticket-classifier/
 
 ---
 
-## 🚀 Local Environment Setup & Testing
+## Local Environment Setup & Testing
 
 Follow these step-by-step instructions to clone, set up, train, and test the project locally.
 
@@ -300,11 +244,11 @@ curl -X POST "http://127.0.0.1:8000/predict" \
 
 #### C. Interactive OpenAPI (Swagger) Documentation
 Open your browser and navigate to:
-👉 **`http://127.0.0.1:8000/docs`** to test API requests directly via the interactive UI.
+**`http://127.0.0.1:8000/docs`** to test API requests directly via the interactive UI.
 
 ---
 
-### 9. Run with Docker 🐳
+### 9. Run with Docker 
 
 #### Build Docker Image
 ```bash
@@ -320,7 +264,7 @@ Verify the containerized API at `http://localhost:8000/health`.
 
 ---
 
-## 🔮 Future Scope & Improvements
+## Future Scope & Improvements
 
 - [ ] **Transformer Models (BERT/RoBERTa):** Upgrade from TF-IDF + Logistic Regression to pre-trained transformer embeddings for superior semantic text understanding.
 - [ ] **LLM Integration (Gemini / OpenAI / Llama):** Implement zero-shot or few-shot ticket categorization and automated AI draft response generation.
